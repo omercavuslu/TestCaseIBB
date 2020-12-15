@@ -1,0 +1,212 @@
+<html>
+
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="NTCUIKit.css">
+    <script src="NTCTable.js"></script>
+    <script>
+        var datas = {
+            Products: [
+                {
+                    "productid": "LT-1449506",
+                    "productName": "Super Outfit",
+                    "productPrice": 300.45,
+                    "qnty": 10
+                },
+                {
+                    "productid": "LT-4523632",
+                    "productName": "Rocket-Powered Roller Skates",
+                    "productPrice": 11367.99,
+                    "qnty": 4
+                },
+                {
+                    "productid": "TM-2026045",
+                    "productName": "Giant Kite Kit",
+                    "productPrice": 1099.90,
+                    "qnty": 12
+                },
+                {
+                    "productid": "LT-1990790",
+                    "productName": "Bird Seed",
+                    "productPrice": 5.90,
+                    "qnty": 55
+                },
+                {
+                    "productid": "TLTS-8002604",
+                    "productName": "Artificial Rock",
+                    "productPrice": 123.99,
+                    "qnty": 24
+                },
+                {
+                    "productid": "TM-6792415",
+                    "productName": "Giant Rubber Band V1",
+                    "productPrice": 44.90,
+                    "qnty": 5000
+                },
+                {
+                    "productid": 'LT-8163469',
+                    "productName": 'Jet Motor',
+                    "productPrice": 99999.99,
+                    "qnty": 2
+                }
+            ]
+        }
+
+        var totalPrice = 0;
+
+        datas.Products.forEach(row => {
+            var price = (row.productPrice * row.qnty).toFixed(2)
+            totalPrice += Number(price)
+            row.price = price
+        })
+        var headers = ["Ürün Kodu", "Ürün Adı", "Birim Fiyat(TL)", "Adet", "Fiyat(TL)"]
+        var table = new NTCTable(datas, headers);
+        console.log(table)
+
+        var totalPriceformetted = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(totalPrice)
+
+ 
+
+        //#region price formetter
+        const arr = x => Array.from(x);
+        const num = x => Number(x) || 0;
+        const str = x => String(x);
+        const isEmpty = xs => xs.length === 0;
+        const take = n => xs => xs.slice(0, n);
+        const drop = n => xs => xs.slice(n);
+        const reverse = xs => xs.slice(0).reverse();
+        const comp = f => g => x => f(g(x));
+        const not = x => !x;
+        const chunk = n => xs =>
+            isEmpty(xs) ? [] : [take(n)(xs), ...chunk(n)(drop(n)(xs))];
+
+        let numToWords = n => {
+
+            let a = [
+                '', 'bir', 'iki', 'üç', 'dört',
+                'beş', 'altı', 'yedi', 'sekiz', 'dokuz',
+                'on', 'on bir', 'on iki', 'on üç', 'on dört',
+                'on beş', 'on altı', 'on yedi', 'on sekiz', 'on dokuz'
+            ];
+
+            let b = [
+                '', '', 'yirmi', 'otuz', 'kırk',
+                'elli', 'altmış', 'yetmiş', 'seksen', 'doksan'
+            ];
+
+            let g = [
+                '', 'bin', 'million', 'milyon', 'trilyon', 'katrilyon'
+            ];
+
+            // this part is really nasty still
+            // it might edit this again later to show how Monoids could fix this up
+            let makeGroup = ([ones, tens, huns]) => {
+                return [
+                    num(huns) === 0 ? '' : a[huns] + ' yüz ',
+                    num(ones) === 0 ? b[tens] : b[tens] && b[tens] + '-' || '',
+                    a[tens + ones] || a[ones]
+                ].join('');
+            };
+
+            let thousand = (group, i) => group === '' ? group : `${group} ${g[i]}`;
+
+            if (typeof n === 'number')
+                return numToWords(String(n));
+            else if (n === '0')
+                return 'zero';
+            else
+                return comp(chunk(3))(reverse)(arr(n))
+                    .map(makeGroup)
+                    .map(thousand)
+                    .filter(comp(not)(isEmpty))
+                    .reverse()
+                    .join(' ');
+        };
+
+        //#endregion
+
+    </script>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        #leftSide {
+            width: 20%;
+            float: left;
+            height: 100%;
+            background-color: cadetblue;
+            padding: 20px;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            color: white;
+        }
+
+        #total {
+            padding-left: 120px;
+            font-size: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="leftSide">
+        <h1>Sipariş detay</h1>
+        <br/>
+        <h3>Firma Adı</h3>
+        <h4>Halil Pazarlama</h4>
+        <br/>
+        <h3>Adres</h3>
+        <h4>Kozytağı Mahallesi, Marmara Cad. Şale Apt. No:7 Kadıköy/İstanbul</h4>
+        <br/>
+        <h3>Telefon</h3>
+        <h4>0090 0216 123 4567</h4>
+        <br/>
+        <h3>e-Posta</h3>
+        <h4>kapinizda@halilpazarlama.com</h4>
+        <br/>
+        <h3>Ünvan</h3>
+        <h4>Halil Pazarlama İnş. Tah. Turz. Tic Ltd. Şti.</h4>
+        <br/>
+        <h3>Fatura adresi</h3>
+        <h4>Kozytağı Mahallesi, Marmara Cad. Şale Apt. No:7 Kadıköy/İstanbul</h4>
+        <br/>
+        <h3>Vergi Dairesi</h3>
+        <h4>Büyük mükellefler vd.</h4>
+        <br/>
+        <h3>Vergi no</h3>
+        <h4>123456789012</h4>
+    </div>
+    <div style="width: 80%;float: left;height: 100%;background-color: wheat;">
+        <div id="table" style="padding: 20px;"></div>
+        <div style="padding-left: 100px;">Toplam</div>
+        <div id="total"></div>
+        <div id="totalWords" style="padding-left: 100px;"></div>
+    </div>
+
+
+    <script>
+        document.getElementById("table").innerHTML = table.generateInnerHtmlCode()
+        
+        //Toplam ücreti hesaplama işlemini tablonun içerisinde gerçekleştirmek istedim fakat 
+        // sonuca ulaşamaıdım
+        // table.rows.Products.forEach(row => {
+        //     console.log(row)
+        //     row.addNewCell((row.cellsArray[2].cellData * row.cellsArray[3].cellData).toString())
+        // })
+        
+        document.getElementById("total").innerHTML = totalPriceformetted
+        console.log(totalPrice.toFixed(0))
+        document.getElementById('totalWords').innerHTML = numToWords(Math.floor(totalPrice).toFixed(0));
+
+        table.reloadHtmlCode()
+        table.setRows()
+
+
+    </script>
+</body>
+
+</html>
